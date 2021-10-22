@@ -1,0 +1,12 @@
+{
+  "name": "hackathons",
+  "description": "Sends a list of hackathons",
+  "options": [
+    {
+      "name": "amount",
+      "description": "Number of hackathons to be sent",
+      "type": 3,
+      "required": true
+    }
+  ]
+}
