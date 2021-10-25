@@ -1,4 +1,4 @@
-package com.github.nithinmuthukumar.DevpostBot;
+package com.github.nithinmuthukumar;
 import discord4j.common.JacksonResources;
 import discord4j.discordjson.json.ApplicationCommandData;
 import discord4j.discordjson.json.ApplicationCommandRequest;

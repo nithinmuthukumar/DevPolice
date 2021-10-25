@@ -5,7 +5,7 @@
     {
       "name": "amount",
       "description": "Number of hackathons to be sent",
-      "type": 3,
+      "type": 4,
       "required": true
     }
   ]
