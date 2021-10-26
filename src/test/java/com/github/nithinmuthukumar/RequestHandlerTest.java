@@ -17,4 +17,12 @@ class RequestHandlerTest {
 
 
     }
+
+
+
+    @Test
+    void getHackathonsProjects() {
+        Project[] projects = RequestHandler.getHackathonsProjects("https://hack-the-valley-v.devpost.com/");
+        System.out.println(projects[0]);
+    }
 }

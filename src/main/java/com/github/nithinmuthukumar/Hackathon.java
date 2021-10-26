@@ -42,6 +42,8 @@ public class Hackathon {
                 ", hackathonUrl='" + hackathonUrl + '\'' +
                 ", imageUrl='" + imageUrl + '\'' +
                 ", winnersAnnounced=" + winnersAnnounced +
+                ", startSubmissionUrl='" + startSubmissionUrl + '\'' +
+                ", submissionGalleryUrl='" + submissionGalleryUrl + '\'' +
                 ", themes=" + themes +
                 '}';
     }
