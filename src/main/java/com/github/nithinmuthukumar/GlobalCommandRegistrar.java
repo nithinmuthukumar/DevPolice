@@ -44,6 +44,7 @@ public class GlobalCommandRegistrar {
 
             //Check if this is a new command that has not already been registered.
             if (!discordCommands.containsKey(request.name())) {
+                System.out.println("New Command Registered");
                 //Not yet created with discord, let's do it now.
                 applicationService.createGlobalApplicationCommand(applicationId, request).block();
 
@@ -65,6 +66,7 @@ public class GlobalCommandRegistrar {
 
             //Check if the command has been changed and needs to be updated.
             if (hasChanged(discordCommand, command)) {
+                System.out.println("Command has changed");
                 applicationService.modifyGlobalApplicationCommand(applicationId, discordCommandId, command).block();
 
             }

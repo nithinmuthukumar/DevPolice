@@ -36,16 +36,34 @@ public class RequestHandler {
 
 
     }
-    public static Project[] getHackathonsProjects(String hackathonUrl){
+    public static Project[] getHackathonsSubmissions(String hackathonUrl){
         String json = String.format("{\"hackathonUrl\":\"%s\"}",hackathonUrl);
-
-        String response = client.headers(h ->h.add("Content-Type","application/json")).post().uri(baseUrl+"/hackathons/projects/")
-                .send(ByteBufFlux.fromString(Mono.just(json)))
-                .responseSingle((status,res)->res.asString())
-                .block();
+        String response = sendRequest("/hackathons/submissions/\")",json);
 
         JsonObject jsonObject = gson.fromJson(response,JsonObject.class);
         Project[] projects = gson.fromJson(jsonObject.get("projects"),Project[].class);
         return projects;
+    }
+
+    public static Project getProject(String projectUrl) {
+        String json = String.format("{\"projectUrl\":\"%s\"}",projectUrl);
+        String response = sendRequest("/project/",json);
+
+        Project project = gson.fromJson(response,Project.class);
+        return project;
+
+    }
+    public static Member getMember(String username){
+        String json = String.format("{\"username\":\"%s\"}",username);
+        String response = sendRequest("/profile/",json);
+        Member member = gson.fromJson(response,Member.class);
+        return member;
+
+    }
+    public static String sendRequest(String uri,String json){
+        return client.headers(h ->h.add("Content-Type","application/json")).post().uri(baseUrl+uri)
+                .send(ByteBufFlux.fromString(Mono.just(json)))
+                .responseSingle((status,res)->res.asString())
+                .block();
     }
 }

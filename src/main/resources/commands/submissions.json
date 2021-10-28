@@ -1,0 +1,20 @@
+{
+  "name": "submissions",
+  "description": "Checks if any of the projects in the hackathon have violated any rules",
+  "options": [
+    {
+      "name": "url",
+
+      "description": "Url of the hackathon to be checked",
+      "type": 3,
+      "required": true
+    },
+    {
+      "name": "multiple",
+      "required": true,
+      "description": "Whether the project should be flagged if it has been submitted to multiple hackathons",
+      "type": 5
+
+    }
+  ]
+}
