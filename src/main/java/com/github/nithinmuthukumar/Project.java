@@ -3,28 +3,52 @@ package com.github.nithinmuthukumar;
 import java.util.ArrayList;
 
 public class Project {
-    String name;
-    String tagLine;
-    int likes;
-    int commentCount;
-    String projectUrl;
-    String imageUrl;
-    boolean isWinner;
-    ArrayList<Member> members;
-    ArrayList<String> externalLinks;
+    private String name;
+    private String tagLine;
+    private String projectUrl;
+    private String imageUrl;
+    private ArrayList<Member> members;
+    private ArrayList<String> externalLinks;
+    private ArrayList<String> submittedTo;
+
+    public String getName() {
+        return name;
+    }
+
+    public String getTagLine() {
+        return tagLine;
+    }
+
+    public String getProjectUrl() {
+        return projectUrl;
+    }
+
+    public String getImageUrl() {
+        return imageUrl;
+    }
+
+    public ArrayList<Member> getMembers() {
+        return members;
+    }
+
+    public ArrayList<String> getExternalLinks() {
+        return externalLinks;
+    }
+
+    public ArrayList<String> getSubmittedTo() {
+        return submittedTo;
+    }
 
     @Override
     public String toString() {
         return "Project{" +
                 "name='" + name + '\'' +
                 ", tagLine='" + tagLine + '\'' +
-                ", likes=" + likes +
-                ", commentCount=" + commentCount +
                 ", projectUrl='" + projectUrl + '\'' +
                 ", imageUrl='" + imageUrl + '\'' +
-                ", isWinner=" + isWinner +
                 ", members=" + members +
                 ", externalLinks=" + externalLinks +
+                ", submittedTo=" + submittedTo +
                 '}';
     }
 }

@@ -3,18 +3,18 @@ package com.github.nithinmuthukumar;
 
 import discord4j.core.DiscordClientBuilder;
 import discord4j.core.GatewayDiscordClient;
-import discord4j.core.event.domain.Event;
 import discord4j.core.event.domain.interaction.ChatInputInteractionEvent;
 import discord4j.core.event.domain.lifecycle.ReadyEvent;
 import discord4j.core.object.command.ApplicationCommandInteractionOption;
 import discord4j.core.object.command.ApplicationCommandInteractionOptionValue;
 import discord4j.core.object.component.Button;
 import discord4j.core.object.component.SelectMenu;
+
 import discord4j.core.object.entity.Message;
 import discord4j.core.object.entity.User;
 import discord4j.core.spec.EmbedCreateSpec;
 import discord4j.core.spec.InteractionApplicationCommandCallbackReplyMono;
-import discord4j.core.spec.InteractionFollowupCreateMono;
+import org.reactivestreams.Publisher;
 import reactor.core.publisher.Mono;
 
 
@@ -26,7 +26,7 @@ public class DevPolice {
 
     public static void main(String[] args) {
 
-        final GatewayDiscordClient client = DiscordClientBuilder.create("").build()
+        final GatewayDiscordClient client = DiscordClientBuilder.create("ODcyODczNjU0NjY3NTk1ODA2.YQwM8A.7UZR0N4wo8kS4U6QDNxXi9J_fTw").build()
                 .login()
                 .block();
         try {
@@ -40,26 +40,33 @@ public class DevPolice {
             System.out.printf("Logged in as %s#%s%n", self.getUsername(), self.getDiscriminator());
         })).subscribe();
         client.on(ChatInputInteractionEvent.class, event -> {
+
+
             System.out.println(event.getCommandName());
+
             switch (event.getCommandName()) {
                 case "project":
                     System.out.println("projectcheck");
-
-                    event.deferReply().then(projectCheck(event));
-                    break;
-
+                    event.deferReply().block();
+                    return projectCheck(event);
 
 
+                    //return event.reply("hi");
+
+                    //event.editReply("ahi");
                 case "hackathon":
-                    return hackathonSubmissionsCheck(event);
+                    break;
+                    //return hackathonSubmissionsCheck(event);
+
                 case "user":
                     break;
                 default:
-                    return event.reply("The command doesn't seem to exist").withEphemeral(true);
+                    break;
+                    //return event.reply("The command doesn't seem to exist").withEphemeral(true);
             }
+            return event.deferReply().then(event.createFollowup());
 
 
-            return Mono.empty();
 
         }).subscribe();
         client.onDisconnect().block();
@@ -86,7 +93,7 @@ public class DevPolice {
 
         Project project = RequestHandler.getProject(projectUrl);
         System.out.println(project);
-        for(Member m:project.members){
+        for(Member m:project.getMembers()){
             System.out.println(m.getExternalLinks().toString());
 
         }
@@ -107,8 +114,7 @@ public class DevPolice {
 //
 //        return event.reply().withEmbeds(embed.build()).withComponents(ActionRow.of(selectMenu),ActionRow.of(buttons));
         System.out.println("This took awhile");
-        return event.createFollowup("This took awhile");
-
+        return event.editReply("ahgri");
     }
 
 
