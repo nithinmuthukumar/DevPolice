@@ -3,11 +3,8 @@ package com.github.nithinmuthukumar;
 
 
 
-import org.checkerframework.checker.units.qual.A;
-
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
 
@@ -49,10 +46,10 @@ public class Hackathon {
         return winnersAnnounced;
     }
 
-    public ArrayList<LocalDate> submissionPeriodAsDates(){
+    public List<LocalDateTime> submissionPeriodAsDates(){
         String datePattern = "MMM dd yyyy";
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern(datePattern);
-        ArrayList<LocalDate> dates = new ArrayList<>();
+        ArrayList<LocalDateTime> dates = new ArrayList<>();
         String[] splitByComma = submissionPeriod.split(",");
         String year = splitByComma[1];
         String[] splitByDash = splitByComma[0].split("-");
@@ -61,8 +58,8 @@ public class Hackathon {
         if(to.split(" ").length==1){
             to = from.split(" ")[0]+" "+to;
         }
-        dates.add(LocalDate.parse(from+year,formatter));
-        dates.add(LocalDate.parse(to+year,formatter));
+        dates.add(LocalDate.parse(from+year,formatter).atStartOfDay());
+        dates.add(LocalDate.parse(to+year,formatter).atTime(23,59));
 
         return dates;
 

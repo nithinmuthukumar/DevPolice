@@ -4,6 +4,7 @@ import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class Repository {
 
@@ -20,7 +21,7 @@ public class Repository {
     }
 
     public List<String> getContributors() {
-        return contributors;
+        return contributors.stream().map(s->s.replaceAll("\"","")).collect(Collectors.toList());
     }
 
     public LocalDateTime getCreated() {

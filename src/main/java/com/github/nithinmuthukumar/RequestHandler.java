@@ -55,9 +55,9 @@ public class RequestHandler {
         return member;
 
     }
+    //TODO make better for other forms of git data such as organization
     public static Repository getRepository(String projectGit){
         List<String> ownerName = DevPolice.getProjectGitInfo(projectGit);
-        System.out.println(ownerName);
 
         String json = String.format("{\"query\":\"{repository(owner:\\\"%s\\\",name:\\\"%s\\\"){collaborators{nodes{login}},name,createdAt,pushedAt,projectsUrl}}\"}"
                 ,ownerName.get(1),ownerName.get(0));

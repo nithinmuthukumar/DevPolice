@@ -19,10 +19,8 @@ import reactor.core.publisher.Mono;
 
 
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.List;
+import java.time.LocalDateTime;
+import java.util.*;
 import java.util.stream.Collectors;
 
 
@@ -49,11 +47,16 @@ public class DevPolice {
             System.out.println(event.getCommandName());
 
             switch (event.getCommandName()) {
+                //TODO add way more options to project such as start time and end time, should check if pushed after
                 case "project":
                     System.out.println("projectcheck");
                     event.deferReply().block();
-                    projectCheck(event);
-                    return projectCheck(event);
+
+                    return executeProject(event);
+
+
+
+
 
 
                     //return event.reply("hi");
@@ -89,20 +92,38 @@ public class DevPolice {
 
     }
 
-    private static Mono<Message> projectCheck(ChatInputInteractionEvent event){
+    private static Mono<Message> executeProject(ChatInputInteractionEvent event){
 
         String projectUrl = event.getOption("url")
                 .flatMap(ApplicationCommandInteractionOption::getValue)
                 .map(ApplicationCommandInteractionOptionValue::asString).get();
-        System.out.println("before request "+projectUrl);
 
         Project project = RequestHandler.getProject(projectUrl);
+        List<Repository> repositories = new ArrayList<>();
 
-        List<Repository> repositories = project.getExternalLinks().stream()
+        repositories = project.getExternalLinks().stream()
                 .filter(s->s.contains("github.com"))
                 .map(RequestHandler::getRepository)
                 .collect(Collectors.toList());
 
+
+
+
+
+
+
+
+        Set<String> memberViolators = contributorsCheck(project,repositories);
+        List<Repository> submissionViolators = timePeriodCheck(project,repositories);
+        System.out.println(memberViolators);
+        System.out.println(submissionViolators);
+        if(memberViolators.size()>0||submissionViolators.size()>0){
+            return event.editReply("There is a violation");
+
+        }
+        return event.editReply("No violations");
+    }
+    public static Set<String> contributorsCheck(Project project,List<Repository> repositories){
         List<List<String>> mu = new ArrayList<>();
         for(Member m:project.getMembers()){
             mu.add(m.getExternalLinks().stream().filter(s->s.contains("github.com")).map(s->{
@@ -110,36 +131,38 @@ public class DevPolice {
                 return urlParts[urlParts.length-1];
             }).collect(Collectors.toList()));
         }
-        List<String> memberUsernames = mu.stream().flatMap(List::stream).collect(Collectors.toList());
 
+        Set<String> memberUsernames = mu.stream().flatMap(List::stream).collect(Collectors.toSet());
+        Set<String> contributors = repositories.stream().map(Repository::getContributors).flatMap(List::stream).collect(Collectors.toSet());
+        Set<String> notMember = new HashSet<>();
+        for(String c:contributors){
+            if(!memberUsernames.contains(c)){
+                notMember.add(c);
+            }
+        }
 
-        List<Hackathon> hackathons = project.getHackathons().stream().map(h->RequestHandler.getHackathon(h.getHackathonUrl())).collect(Collectors.toList());
-        //TODO check if commits happened within submission period
+        return notMember;
+
+    }
+    public static List<Repository> timePeriodCheck(Project project, List<Repository> repositories){
+        List<Hackathon> hackathons = project.getHackathons().stream()
+                .map(h->RequestHandler.getHackathon(h.getHackathonUrl())).collect(Collectors.toList());
+        List<Repository> dateViolators = new ArrayList<>();
         for(Hackathon hackathon:hackathons){
-            List<LocalDate> submissionPeriod = hackathon.submissionPeriodAsDates();
-            for(Repository r:repositories){
-                r.getCreated();
-                r.getLastUpdated();
-            }
+            try{
+            List<LocalDateTime> submissionPeriod = hackathon.submissionPeriodAsDates();
+                for (Repository r : repositories) {
+                    if ((r.getCreated().isBefore(submissionPeriod.get(0)))
+                            || (r.getLastUpdated().isAfter(submissionPeriod.get(1)))) {
 
+                        dateViolators.add(r);
+                    }
+                }
+            }catch (Exception e){
+                e.printStackTrace();
+            }
         }
-        for(Repository repository:repositories){
-            //TODO do something with checks
-            if(repository.getContributors().size()==memberUsernames.size()){
-
-            }
-            for(String username:memberUsernames){
-                if(repository.getContributors().contains(username));
-            }
-
-
-
-        }
-
-
-
-        System.out.println("This took awhile");
-        return event.editReply(Arrays.toString(project.getExternalLinks().get(0).split("/")));
+        return dateViolators;
     }
     public static List<String> getProjectGitInfo(String projectGit){
         String[] urlParts= projectGit.split("/");

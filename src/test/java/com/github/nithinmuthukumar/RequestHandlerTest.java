@@ -35,7 +35,7 @@ class RequestHandlerTest {
 
     @Test
     void testGetProject() {
-        Project project= RequestHandler.getProject("https://devpost.com/software/shopadvisr");
+        Project project= RequestHandler.getProject("https://devpost.com/software/pixolous");
         System.out.println(project);
     }
 
@@ -54,7 +54,7 @@ class RequestHandlerTest {
 
     @Test
     void testGetMember() {
-        Member m = RequestHandler.getMember("fairnightzz");
+        Member m = RequestHandler.getMember("kugelblitz3");
         System.out.println(m);
     }
 
