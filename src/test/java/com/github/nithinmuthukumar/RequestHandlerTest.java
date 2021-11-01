@@ -9,8 +9,9 @@ class RequestHandlerTest {
 
     @Test
     void testGetHackathons() {
-        Hackathon[] hackathons= RequestHandler.getHackathons(1,"jj");
-        System.out.println(hackathons[0]);
+//        Hackathon[] hackathons= RequestHandler.getHackathons(1,"jj");
+//        System.out.println(hackathons[0]);
+
 
 
 
@@ -43,7 +44,9 @@ class RequestHandlerTest {
     }
 
     @Test
-    void testGetHackathons1() {
+    void testGetHackathon() {
+        Hackathon hackathon = RequestHandler.getHackathon("https://frosthack.devpost.com");
+        System.out.println(hackathon.submissionPeriodAsDates());
     }
 
 
@@ -56,4 +59,31 @@ class RequestHandlerTest {
     }
 
 
+    @Test
+    void getHackathonsSubmissions() {
+    }
+
+    @Test
+    void getProject() {
+    }
+
+    @Test
+    void getHackathon() {
+    }
+
+    @Test
+    void getMember() {
+    }
+
+    @Test
+    void getGithubProjectData() {
+        Repository r = RequestHandler.getRepository("https://github.com/landofmesa/mesa");
+        System.out.println(r);
+        System.out.println(r.getCreated());
+        System.out.println(r.getLastUpdated());
+    }
+
+    @Test
+    void sendRequest() {
+    }
 }

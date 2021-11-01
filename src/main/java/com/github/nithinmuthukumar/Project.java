@@ -9,7 +9,7 @@ public class Project {
     private String imageUrl;
     private ArrayList<Member> members;
     private ArrayList<String> externalLinks;
-    private ArrayList<String> submittedTo;
+    private ArrayList<Hackathon> hackathons;
 
     public String getName() {
         return name;
@@ -35,8 +35,8 @@ public class Project {
         return externalLinks;
     }
 
-    public ArrayList<String> getSubmittedTo() {
-        return submittedTo;
+    public ArrayList<Hackathon> getHackathons() {
+        return hackathons;
     }
 
     @Override
@@ -48,7 +48,7 @@ public class Project {
                 ", imageUrl='" + imageUrl + '\'' +
                 ", members=" + members +
                 ", externalLinks=" + externalLinks +
-                ", submittedTo=" + submittedTo +
+                ", hackathons=" + hackathons +
                 '}';
     }
 }

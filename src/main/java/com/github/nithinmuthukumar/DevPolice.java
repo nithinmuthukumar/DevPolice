@@ -18,15 +18,19 @@ import org.reactivestreams.Publisher;
 import reactor.core.publisher.Mono;
 
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
+import java.util.List;
+import java.util.stream.Collectors;
 
 
 public class DevPolice {
 
     public static void main(String[] args) {
 
-        final GatewayDiscordClient client = DiscordClientBuilder.create("ODcyODczNjU0NjY3NTk1ODA2.YQwM8A.7UZR0N4wo8kS4U6QDNxXi9J_fTw").build()
+        final GatewayDiscordClient client = DiscordClientBuilder.create("").build()
                 .login()
                 .block();
         try {
@@ -48,6 +52,7 @@ public class DevPolice {
                 case "project":
                     System.out.println("projectcheck");
                     event.deferReply().block();
+                    projectCheck(event);
                     return projectCheck(event);
 
 
@@ -92,30 +97,61 @@ public class DevPolice {
         System.out.println("before request "+projectUrl);
 
         Project project = RequestHandler.getProject(projectUrl);
-        System.out.println(project);
+
+        List<Repository> repositories = project.getExternalLinks().stream()
+                .filter(s->s.contains("github.com"))
+                .map(RequestHandler::getRepository)
+                .collect(Collectors.toList());
+
+        List<List<String>> mu = new ArrayList<>();
         for(Member m:project.getMembers()){
-            System.out.println(m.getExternalLinks().toString());
+            mu.add(m.getExternalLinks().stream().filter(s->s.contains("github.com")).map(s->{
+                String[] urlParts = s.split("/");
+                return urlParts[urlParts.length-1];
+            }).collect(Collectors.toList()));
+        }
+        List<String> memberUsernames = mu.stream().flatMap(List::stream).collect(Collectors.toList());
+
+
+        List<Hackathon> hackathons = project.getHackathons().stream().map(h->RequestHandler.getHackathon(h.getHackathonUrl())).collect(Collectors.toList());
+        //TODO check if commits happened within submission period
+        for(Hackathon hackathon:hackathons){
+            List<LocalDate> submissionPeriod = hackathon.submissionPeriodAsDates();
+            for(Repository r:repositories){
+                r.getCreated();
+                r.getLastUpdated();
+            }
+
+        }
+        for(Repository repository:repositories){
+            //TODO do something with checks
+            if(repository.getContributors().size()==memberUsernames.size()){
+
+            }
+            for(String username:memberUsernames){
+                if(repository.getContributors().contains(username));
+            }
+
+
 
         }
 
-        ArrayList<SelectMenu.Option> options = new ArrayList<>();
 
-        EmbedCreateSpec.Builder embed = EmbedCreateSpec.builder().title("hackathon");
-        ArrayList<Button> buttons = new ArrayList<>();
-//        for (int h=0;h<hackathons.length;h++) {
-//            Hackathon hackathon = hackathons[h];
-//
-//            options.add(SelectMenu.Option.of(hackathon.name,hackathon.prizeAmount));
-//            embed.addField((h+1)+". "+hackathon.name,String.format("Prize: %s\nOrganization: %s\n%d participants",
-//                    hackathon.prizeAmount,hackathon.organizationName,hackathon.registrationsCount),false);
-//            buttons.add(Button.primary("hackathon"+h,Integer.toString(h+1)));
-//        }
-//        SelectMenu selectMenu = SelectMenu.of("custom-id",options);
-//
-//        return event.reply().withEmbeds(embed.build()).withComponents(ActionRow.of(selectMenu),ActionRow.of(buttons));
+
         System.out.println("This took awhile");
-        return event.editReply("ahgri");
+        return event.editReply(Arrays.toString(project.getExternalLinks().get(0).split("/")));
     }
+    public static List<String> getProjectGitInfo(String projectGit){
+        String[] urlParts= projectGit.split("/");
+        List<String> ownerName= new ArrayList<String>();
+        ownerName.add(urlParts[urlParts.length-1]);
+        ownerName.add(urlParts[urlParts.length-2]);
+        return ownerName;
+
+
+    }
+
+
 
 
 }
